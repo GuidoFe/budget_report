@@ -39,27 +39,66 @@ Where:
 - **Name** is an arbitrary name of the budget. 
 - **Period** is the applicable period of the budget ie one of "year", "biannual", "quarter", "month", "week" or "day"
 - **Amount** is a number specifying the budget amount allocated for this account,  
-- **Accounts** are the names of the accounts covered by the budget, separated by a space
+- **Accounts** are the names of the accounts covered by the budget, separated by a space. The entire list must be enclosed by quotes.
 - **Currency** is the currency in which budget is specified.  
 
 Here is an example budget:  
 
-    2021-12-06 custom "budget" "Credit Card" Liabilities:CreditCard "month"                             10000 RS 
-    2021-12-06 custom "budget" "Fuel" Expenses:Car:Fuel Expenses:Truck:Fuel "month"                      5000 RS  
-    2021-12-06 custom "budget" "Fun" Expenses:Fun:Gaming Expenses:Subscriptions:Twitch                   1000 RS
-    2021-12-06 custom "budget" "Clothing" Expenses:Clothing Expenses:Accessories "month"                10000 RS  
-    2021-12-06 custom "budget" "School" Expenses:Education:Fees "month"                                 11000 RS  
-    2021-12-06 custom "budget" "Dining out" Expenses:Food:DiningOut Expenses:Vacation:Restaurant "month" 3000 RS  
-    2021-12-06 custom "budget" "Groceries" Expenses:Groceries "month"                                   50000 RS   
-    2021-12-06 custom "budget" "Medicine" Expenses:Medicine "month"                                      2000 RS     
-    2021-12-06 custom "budget" "Pocket Money" Expenses:PocketMoney "month"                              10000 RS  
+
+```
+2021-11-06 custom "budget" "Credit Card" "
+    Liabilities:CreditCard
+" "month"                          10000.0 RS
+
+2021-11-06 custom "budget" "Fuel" "
+    Expenses:Car:Fuel
+    Expenses:Truck:Fuel
+" "month"                         5000.0 RS
+
+2021-11-06 custom "budget" "Fun" "
+    Expenses:Fun:Gaming
+    Expenses:Subscriptions:Twitch
+" "month"                         1000.0 RS
+
+2021-11-06 custom "budget" "Clothing" "
+    Expenses:Clothing 
+    Expenses:Accessories
+" "month"                         10000.0 RS
+
+2021-11-06 custom "budget" "School" Expenses:Education "month" 11000 RS
+
+2021-11-06 custom "budget" "Dining out" "
+    Expenses:Food:DiningOut 
+    Expenses:Vacation:Restaurant
+" "month"                          3000.0 RS
+
+2021-11-06 custom "budget" "Groceries" Expenses:Groceries "month" 50000 RS
+
+2021-11-06 custom "budget" "Medicine" Expenses:Medicine "month" 2000 RS
+
+2021-11-06 custom "budget" "Pocket Money" Expenses:PocketMoney "month" 10000 RS
+```
 
 Please note that:   
 
 a. Any budgets entries in the beancount file would override any previously specified entries for the same account.  
-b. The budget entries could also be put into a separate file such as `mybudget.bean` and included into your main ledger file as below:  
+b. The budget entries could also be put into a separate file such as `mybudget.bean` and included into your main ledger file with `include "mybudget.bean"`
+c. If you specify multiple accounts for a budget, they must be inside double quotes. You can put them in multiple lines, but the first quote must be in the first line and the second quote must be in the last one. For example, this is **WRONG**:
+```
+2021-11-06 custom "budget" "Fuel" 
+   "Expenses:Car:Fuel
+    Expenses:Truck:Fuel"
+month"                         5000.0 RS
+```
+These are **RIGHT**:
+```
+2021-11-06 custom "budget" "Fuel" "
+    Expenses:Car:Fuel
+    Expenses:Truck:Fuel
+" "month"                         5000.0 RS
 
-    include "mybudget.bean"
+2021-11-06 custom "budget" "Groceries" Expenses:Groceries "month" 50000 RS
+```
 
 ### 3.2 Specifying Transaction to include in budget  
 
@@ -102,24 +141,27 @@ After you have added the budget entries in your beancount file, you can generate
 
 It would generate output similar to that shown below:
 
-    Budget Report:
-      Period: 'month' (2021-12-01 to 2021-12-31)
-	Total Income: 150,000.00
-	Total Budget: 108,000.00
-	Budget Surplus/Deficit: 42,000.00
+```
+Budget Report:
+  Period: 'month' (2021-12-01 to 2021-12-31)
+Total Income: 150,000.00
+Total Budget: 102,000.00
+Budget Surplus/Deficit: 48,000.00
 
-    Name                       Budget    Expense    (%)    Remaining    (%)
-    -----------------------  --------  ---------  -----  -----------  -----
-    Credit Card               10000.0     5000.0   50.0       5000.0   50.0
-    Fuel                       5000.0     1000.0   20.0       4000.0   80.0
-    Fun                        1000.0      100.0   10.0        900.0   90.0
-    Clothing                  10000.0     5000.0   50.0       5000.0   50.0
-    School                    11000.0     5000.0   45.5       6000.0   54.5
-    Dining out                10000.0     3000.0   30.0       7000.0   70.0
-    Groceries                 50000.0    10800.0   21.6      39200.0   78.4
-    Medicine                   2000.0     1000.0   50.0       1000.0   50.0
-    Pocket Money              10000.0     6000.0   60.0       4000.0   40.0
-    Totals                   109000.0    36900.0   35.9      72100.0   66.1
+Name                   Budget    Expense     (%)    Remaining     (%)
+------------------  ---------  ---------  ------  -----------  ------
+Credit Card          10000.00       0.00    0.00     10000.00  100.00
+Fuel                  5000.00    2500.00   50.00      2500.00   50.00
+Fun                   1000.00     300.00   30.00       700.00   70.00
+Clothing             10000.00    8000.00   80.00      2000.00   20.00
+School               11000.00    5200.00   47.30      5800.00   52.70
+Dining out            3000.00    4000.00  133.30     -1000.00  -33.30
+Groceries            50000.00   10800.00   21.60     39200.00   78.40
+Medicine              2000.00    1000.00   50.00      1000.00   50.00
+Pocket Money         10000.00    6000.00   60.00      4000.00   40.00
+Expenses:Gardening       0.00    2000.00             -2000.00
+Totals              102000.00   39800.00   39.00     62200.00   61.00
+```
 
 Notes:  
 
