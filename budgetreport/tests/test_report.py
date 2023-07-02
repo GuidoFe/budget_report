@@ -7,7 +7,7 @@ def testSingleAccountBudget(monkeypatch):
     2001-01-01 open Assets:CashInHand
     2001-01-01 open Expenses:Groceries
 
-    2021-01-01 custom "budget" "Groceries" Expenses:Groceries "month"   1000.0 USD
+    2021-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"   1000.0 USD
 
     2021-01-02 * "TestPayee" "Some description"
       Expenses:Groceries                    400.0 USD
@@ -33,7 +33,7 @@ def testBudgetWithZeroValue(monkeypatch):
     2001-01-01 open Assets:CashInHand
     2001-01-01 open Expenses:Groceries
 
-    2021-01-01 custom "budget" "Groceries" Expenses:Groceries "month"   0.0 USD
+    2021-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"   0.0 USD
 
     2021-01-02 * "TestPayee" "Some description"
       Expenses:Groceries                    400.0 USD
@@ -58,7 +58,7 @@ def testTaggedBugget(monkeypatch):
     2001-01-01 open Assets:CashInHand
     2001-01-01 open Expenses:Groceries
 
-    2021-01-01 custom "budget" "Groceries" Expenses:Groceries "month"   1000.0 USD
+    2021-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"   1000.0 USD
 
     pushtag #test-budget
 
@@ -96,7 +96,7 @@ def testBuggetWithStartAndEndDate(monkeypatch):
     2001-01-01 open Assets:CashInHand
     2001-01-01 open Expenses:Groceries
 
-    2021-01-01 custom "budget" "Groceries" Expenses:Groceries "month"   1000.0 USD
+    2021-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"   1000.0 USD
 
     2020-12-31 * "TestPayee" "Some description"
       Expenses:Groceries                    500.0 USD
@@ -140,8 +140,8 @@ def testMultipleAccountBudgets(monkeypatch):
 2001-01-01 open Expenses:Clothing
 2001-01-01 open Expenses:Education
 
-2021-01-01 custom "budget" "Clothing" Expenses:Clothing "month"     1000.0 USD
-2021-01-01 custom "budget" "Education" Expenses:Education "month"    2000.0 USD
+2021-01-01 custom "budget" "open" "Clothing" Expenses:Clothing "month"     1000.0 USD
+2021-01-01 custom "budget" "open" "Education" Expenses:Education "month"    2000.0 USD
 
 2021-01-02 * "Test Payee 2" "Clothes etc"
     Expenses:Clothing                          300.0 USD
@@ -174,8 +174,8 @@ def testBudgetRedefinitionOverridesOldValue(monkeypatch):
 2001-01-01 open Expenses:Clothing
 2001-01-01 open Expenses:Education
 
-2021-01-01 custom "budget" "Clothing" Expenses:Clothing "month"     1000.0 USD
-2021-01-01 custom "budget" "Clothing" Expenses:Clothing "month"    2000.0 USD
+2021-01-01 custom "budget" "open" "Clothing" Expenses:Clothing "month"     1000.0 USD
+2021-01-01 custom "budget" "open" "Clothing" Expenses:Clothing "month"    2000.0 USD
 
   """)
 
@@ -221,12 +221,12 @@ def testYearBudget(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Education
 
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "year"  12000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "month"  1000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "week"  250.0 RS
-2001-01-01 custom "budget" "Education" Expenses:Education "year"  20000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "year"  12000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"  1000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "week"  250.0 RS
+2001-01-01 custom "budget" "open" "Education" Expenses:Education "year"  20000.0 RS
 
     """)
 
@@ -249,12 +249,12 @@ def testMonthBudget(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Education
 
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "year"  12000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "month"  1000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "week"  250.0 RS
-2001-01-01 custom "budget" "Education" Expenses:Education "month"  2000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "year"  12000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"  1000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "week"  250.0 RS
+2001-01-01 custom "budget" "open" "Education" Expenses:Education "month"  2000.0 RS
 
     """)
 
@@ -277,12 +277,12 @@ def testQuarterBudget(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Education
 
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "year"  12000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "month"  1000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "week"  250.0 RS
-2001-01-01 custom "budget" "Education" Expenses:Education "quarter"  2000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "year"  12000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"  1000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "week"  250.0 RS
+2001-01-01 custom "budget" "open" "Education" Expenses:Education "quarter"  2000.0 RS
 
     """)
 
@@ -305,12 +305,12 @@ def testBiannualBudget(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Education
 
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "year"  12000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "month"  1000.0 RS
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "week"  250.0 RS
-2001-01-01 custom "budget" "Education" Expenses:Education "biannual"  2000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "year"  12000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "biannual"  6000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "quarter"  3000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"  1000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "week"  250.0 RS
+2001-01-01 custom "budget" "open" "Education" Expenses:Education "biannual"  2000.0 RS
 
     """)
 
@@ -335,9 +335,9 @@ def testLiabilitiesHandling(monkeypatch):
 2001-01-01 open Expenses:Education
 2001-01-01 open Liabilities:CreditCard
 
-2001-01-01 custom "budget" "Groceries" Expenses:Groceries "month"  12000.0 RS
-2001-01-01 custom "budget" "CreditCard" Liabilities:CreditCard "month"  6000.0 RS
-2001-01-01 custom "budget" "Education" Expenses:Education "month"  2000.0 RS
+2001-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"  12000.0 RS
+2001-01-01 custom "budget" "open" "CreditCard" Liabilities:CreditCard "month"  6000.0 RS
+2001-01-01 custom "budget" "open" "Education" Expenses:Education "month"  2000.0 RS
 
 2021-01-02 * "Test Payee 2" "Groceries"
     Expenses:Groceries                            900.0 RS
@@ -408,11 +408,11 @@ def testBudgetEndDate(monkeypatch):
 2001-01-01 open Expenses:Food
 2001-01-01 open Expenses:Travel
 
-2021-01-01 custom "budget" "Clothing" Expenses:Clothing "month"     1000.0 USD
-2021-01-01 custom "budget" "Education" Expenses:Education "month"    2000.0 USD
-2021-01-01 custom "budget" "Food" Expenses:Food "month"     1000.0 USD
+2021-01-01 custom "budget" "open" "Clothing" Expenses:Clothing "month"     1000.0 USD
+2021-01-01 custom "budget" "open" "Education" Expenses:Education "month"    2000.0 USD
+2021-01-01 custom "budget" "open" "Food" Expenses:Food "month"     1000.0 USD
 
-2021-02-01 custom "budget" "Travel" Expenses:Travel "month"    2000.0 USD
+2021-02-01 custom "budget" "open" "Travel" Expenses:Travel "month"    2000.0 USD
 
     """)
 
@@ -435,7 +435,7 @@ def testBudgetWithMultipleAccounts(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Takeout
 
-2021-01-01 custom "budget" "Food" "Expenses:Takeout Expenses:Groceries" "month"   1000.0 USD
+2021-01-01 custom "budget" "open" "Food" "Expenses:Takeout Expenses:Groceries" "month"   1000.0 USD
 
 2021-01-02 * "TestPayee" "Some description"
     Expenses:Groceries                    400.0 USD
@@ -466,9 +466,9 @@ def testThrowWhenAccountAlreadyTaken(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Takeout
 
-2021-01-01 custom "budget" "Food" "Expenses:Takeout Expenses:Groceries" "month"   1000.0 USD
+2021-01-01 custom "budget" "open" "Food" "Expenses:Takeout Expenses:Groceries" "month"   1000.0 USD
 
-2021-01-01 custom "budget" "Other" Expenses:Takeout "month"   1000.0 USD
+2021-01-01 custom "budget" "open" "Other" Expenses:Takeout "month"   1000.0 USD
 
 2021-01-02 * "TestPayee" "Some description"
     Expenses:Groceries                    400.0 USD
@@ -497,9 +497,9 @@ def testCanAcceptAccountInDifferentBudgetsIfPeriodIsDifferent(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Takeout
 
-2021-01-01 custom "budget" "Food" "Expenses:Takeout Expenses:Groceries" "month" 1000.0 USD
+2021-01-01 custom "budget" "open" "Food" "Expenses:Takeout Expenses:Groceries" "month" 1000.0 USD
 
-2021-01-01 custom "budget" "YearlyFood" Expenses:Groceries "year" 12000.0 USD
+2021-01-01 custom "budget" "open" "YearlyFood" Expenses:Groceries "year" 12000.0 USD
 
 2021-01-02 * "TestPayee" "Some description"
     Expenses:Groceries                    400.0 USD
@@ -531,12 +531,12 @@ def testMultipleBudgetsWithMultipleAccounts(monkeypatch):
     2001-01-01 open Expenses:Tech:HW
     2001-01-01 open Expenses:Tech:SW
     
-    2021-01-01 custom "budget" "Food" "
+    2021-01-01 custom "budget" "open" "Food" "
         Expenses:Takeout 
         Expenses:Groceries
     " "month" 1000.0 USD
     
-    2021-01-01 custom "budget" "Tech" "Expenses:Tech:HW Expenses:Tech:SW" "month" 2000.0 USD
+    2021-01-01 custom "budget" "open" "Tech" "Expenses:Tech:HW Expenses:Tech:SW" "month" 2000.0 USD
     
     2021-01-02 * "TestPayee" "Some description"
         Expenses:Groceries                    400.0 USD
@@ -578,7 +578,7 @@ def testSupportSubAccounts(monkeypatch):
 2001-01-01 open Expenses:Groceries:Meat
 2001-01-01 open Expenses:Food:Takeout
 
-2021-01-01 custom "budget" "Food" "
+2021-01-01 custom "budget" "open" "Food" "
     Expenses:Food 
     Expenses:Groceries
 " "month" 1000.0 USD
@@ -610,7 +610,7 @@ def testSupportSubAccountsPartTwo(monkeypatch):
 2001-01-01 open Expenses:Food:Groceries
 2001-01-01 open Expenses:Food:Takeout
 
-2021-01-01 custom "budget" "Food" Expenses:Food "month" 1000.0 USD
+2021-01-01 custom "budget" "open" "Food" Expenses:Food "month" 1000.0 USD
 
 2021-01-02 * "TestPayee" "Some description"
     Expenses:Food:Groceries                    400.0 USD
@@ -640,12 +640,12 @@ def canOverrideBudgetWithSameName(monkeypatch):
 2001-01-01 open Expenses:B
 2001-01-01 open Expenses:C
 
-2021-01-01 custom "budget" "Food" "
+2021-01-01 custom "budget" "open" "Food" "
     Expenses:A
     Expenses:B
 " "month" 1000.0 USD
 
-2021-01-01 custom "budget" "Food" "
+2021-01-01 custom "budget" "open" "Food" "
     Expenses:A 
     Expenses:C
 " "month" 2000.0 USD
@@ -676,3 +676,62 @@ def canOverrideBudgetWithSameName(monkeypatch):
       assert "Expenses:B" in br.budgetItems
       assert br.getBudgetBudget("Expenses:B") == 0.0
       assert br.getBudgetExpense("Expenses:B") == 100.0
+
+
+def testDateOrderOpenBudget(monkeypatch):
+    entries, errors, options_map = loader.load_string("""
+    2001-01-01 open Assets:CashInHand
+    2001-01-01 open Expenses:Groceries
+
+    2020-02-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"   1000.0 USD
+
+    2020-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"   500.0 USD
+
+    2021-01-02 * "TestPayee" "Some description"
+      Expenses:Groceries                    400.0 USD
+      Assets:CashInHand
+    """)
+
+    with monkeypatch.context() as m:
+      m.setattr(sys, "argv", ["prog", '-s', '2021-01-01', "testfile.bean"])
+
+      parser = main.init_arg_parser()
+      test_args = parser.parse_args()
+
+      br = report.generateBudgetReport(entries, options_map, test_args)
+      assert "Groceries" in br.budgetItems
+      assert br.getBudgetExpense('Groceries') == 400.0
+      assert br.getBudgetBudget('Groceries') == 1000.0
+      assert br.total_budget == 1000.0
+      assert br.total_expenses == 400.0
+      assert br.getTotalRemaining() == 600.0
+
+def testAllocate(monkeypatch):
+    entries, errors, options_map = loader.load_string("""
+    2001-01-01 open Assets:CashInHand
+    2001-01-01 open Expenses:Groceries
+
+    2020-01-01 custom "budget" "open" "Groceries" Expenses:Groceries "month"   1000.0 USD
+
+    2020-01-02 custom "budget" "allocate" "Groceries" 500.0 USD
+
+    2021-01-02 * "TestPayee" "Some description"
+      Expenses:Groceries                    400.0 USD
+      Assets:CashInHand
+
+    2021-02-02 custom "budget" "allocate" "Groceries" 2000.0 USD
+    """)
+
+    with monkeypatch.context() as m:
+      m.setattr(sys, "argv", ["prog", '-s', '2021-01-01', "testfile.bean"])
+
+      parser = main.init_arg_parser()
+      test_args = parser.parse_args()
+
+      br = report.generateBudgetReport(entries, options_map, test_args)
+      assert "Groceries" in br.budgetItems
+      assert br.getBudgetExpense('Groceries') == 400.0
+      assert br.getBudgetBudget('Groceries') == 500.0
+      assert br.total_budget == 500.0
+      assert br.total_expenses == 400.0
+      assert br.getTotalRemaining() == 100.0

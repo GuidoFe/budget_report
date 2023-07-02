@@ -59,6 +59,13 @@ class BudgetReport:
             return 0.0
         else:
             return ret
+    
+    def changeBudgetBudget(self, name, newBudget):
+        budgetItem = self.budgetItems[name]
+        assert budgetItem != None
+        self.total_budget -= float(budgetItem.budget)
+        budgetItem.budget = newBudget
+        self.total_budget += float(budgetItem.budget)
 
     def getBudgetExpense(self, name):
         ret = 0.0
@@ -115,17 +122,25 @@ class BudgetReport:
     def collectBudgets(self, entries, options_map, args):
         # Collect all budgets
         for entry in entries:
-            if isinstance(entry, beancount.core.data.Custom) and \
-               entry.type == 'budget' and \
-               entry.date <= self.end_date and \
-               entry.values[2].value == self.period.period:
-                name = str(entry.values[0].value)
+            if not (isinstance(entry, beancount.core.data.Custom) and \
+                    entry.type == 'budget' and \
+                    entry.date <= self.end_date):
+                continue
+            if entry.values[0].value == 'open' and \
+                    entry.values[3].value == self.period.period:
+                name = str(entry.values[1].value)
                 period = self.period.period
-                budget = abs(entry.values[3].value.number)
+                budget = abs(entry.values[4].value.number)
                 accounts = [];
-                for account in str(entry.values[1].value).split():
+                for account in str(entry.values[2].value).split():
                     accounts.append(account)
                 self._addBudget(name, entry.date, accounts, period, budget)
+            elif str(entry.values[0].value) == "allocate":
+                name = str(entry.values[1].value)
+                if name in self.budgetItems:
+                    budget = abs(entry.values[2].value.number)
+                    self.changeBudgetBudget(name, budget)
+
 
         # Collect expense accounts not budgetted but have expenses within the report period
         acct_query = "select account WHERE account ~ 'Expense' "

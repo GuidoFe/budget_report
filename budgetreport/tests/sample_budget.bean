@@ -40,37 +40,37 @@ option "insert_pythonpath" "True"
 ;      <Date> custom "budget" "<BudgetName>" <Account> ... <Account> <Period> <Amount> <Currency>
 ;============================================================
 
-2021-11-06 custom "budget" "Credit Card" "
+2021-11-06 custom "budget" "open" "Credit Card" "
     Liabilities:CreditCard
 " "month"                          10000.0 RS
 
-2021-11-06 custom "budget" "Fuel" "
+2021-11-06 custom "budget" "open" "Fuel" "
     Expenses:Car:Fuel
     Expenses:Truck:Fuel
 " "month"                         5000.0 RS
 
-2021-11-06 custom "budget" "Fun" "
+2021-11-06 custom "budget" "open" "Fun" "
     Expenses:Fun:Gaming
     Expenses:Subscriptions:Twitch
 " "month"                         1000.0 RS
 
-2021-11-06 custom "budget" "Clothing" "
+2021-11-06 custom "budget" "open" "Clothing" "
     Expenses:Clothing 
     Expenses:Accessories
 " "month"                         10000.0 RS
 
-2021-11-06 custom "budget" "School" Expenses:Education "month" 11000 RS
+2021-11-06 custom "budget" "open" "School" Expenses:Education "month" 11000 RS
 
-2021-11-06 custom "budget" "Dining out" "
+2021-11-06 custom "budget" "open" "Dining out" "
     Expenses:Food:DiningOut 
     Expenses:Vacation:Restaurant
 " "month"                          3000.0 RS
 
-2021-11-06 custom "budget" "Groceries" Expenses:Groceries "month" 50000 RS
+2021-11-06 custom "budget" "open" "Groceries" Expenses:Groceries "month" 50000 RS
 
-2021-11-06 custom "budget" "Medicine" Expenses:Medicine "month" 2000 RS
+2021-11-06 custom "budget" "open" "Medicine" Expenses:Medicine "month" 2000 RS
 
-2021-11-06 custom "budget" "Pocket Money" Expenses:PocketMoney "month" 10000 RS
+2021-11-06 custom "budget" "open" "Pocket Money" Expenses:PocketMoney "month" 10000 RS
 
 ;============================================================
 ; Test transactions
