@@ -34,26 +34,28 @@ Using `budget-report` with your beancount files is a three step process:
 
 You specify your budget by entering a sequenct of beancount `custom` directives in the following format:  
 
-`<Date> custom "budget" <Account> <Period> <Amount> <Currency>`
+`<Date> custom "budget" <Name> <Accounts> <Period> <Amount> <Currency> `
 
 Where:  
 
 - **Date** is in the formate **YYYY-MM-DD**,   
-- **Account** is the name of the account you want to specify budget followed by 2 or more spaces,  
+- **Name** is an arbitrary name of the budget. 
 - **Period** is the applicable period of the budget ie one of "year", "biannual", "quarter", "month", "week" or "day"
 - **Amount** is a number specifying the budget amount allocated for this account,  
+- **Accounts** are the names of the accounts covered by the budget, separated by a space
 - **Currency** is the currency in which budget is specified.  
 
 Here is an example budget:  
 
-    2021-12-06 custom "budget" Liabilities:CreditCard "month"   10000 RS  
-    2021-12-06 custom "budget" Expenses:Car:Fuel "month"         5000 RS  
-    2021-12-06 custom "budget" Expenses:Clothing "month"        10000 RS  
-    2021-12-06 custom "budget" Expenses:Education:Fees "month"  11000 RS  
-    2021-12-06 custom "budget" Expenses:Food:DiningOut "month"   3000 RS  
-    2021-12-06 custom "budget" Expenses:Groceries "month"       50000 RS   
-    2021-12-06 custom "budget" Expenses:Medicine "month"         2000 RS     
-    2021-12-06 custom "budget" Expenses:PocketMoney "month"     10000 RS  
+    2021-12-06 custom "budget" "Credit Card" Liabilities:CreditCard "month"                             10000 RS 
+    2021-12-06 custom "budget" "Fuel" Expenses:Car:Fuel Expenses:Truck:Fuel "month"                      5000 RS  
+    2021-12-06 custom "budget" "Fun" Expenses:Fun:Gaming Expenses:Subscriptions:Twitch                   1000 RS
+    2021-12-06 custom "budget" "Clothing" Expenses:Clothing Expenses:Accessories "month"                10000 RS  
+    2021-12-06 custom "budget" "School" Expenses:Education:Fees "month"                                 11000 RS  
+    2021-12-06 custom "budget" "Dining out" Expenses:Food:DiningOut Expenses:Vacation:Restaurant "month" 3000 RS  
+    2021-12-06 custom "budget" "Groceries" Expenses:Groceries "month"                                   50000 RS   
+    2021-12-06 custom "budget" "Medicine" Expenses:Medicine "month"                                      2000 RS     
+    2021-12-06 custom "budget" "Pocket Money" Expenses:PocketMoney "month"                              10000 RS  
 
 Please note that:   
 
@@ -88,6 +90,7 @@ Note: If `budget-report` encounters a posting in the ledger with the budget tag,
 
 #### 3.2.2 Using start and end dates  
 
+               0.0     2000.0             -2000.0
 Another way to tell `budget-report` which ledger entries to include in budget calculation, is to give it a start date (`-s` or `--start-date` command line option) and/or an end date (`-e` or `--end-date` command line option).  `budget-report` will include all transactions in the ledger falling at or after the given start date and at or before the given end date.
 
 Note: Both the tag and start/end dates could be given together to fine tune the filtering, if that makes sense in your case.
@@ -108,18 +111,18 @@ It would generate output similar to that shown below:
 	Total Budget: 108,000.00
 	Budget Surplus/Deficit: 42,000.00
 
-    Account                    Budget    Expense    (%)    Remaining    (%)
+    Name                       Budget    Expense    (%)    Remaining    (%)
     -----------------------  --------  ---------  -----  -----------  -----
-    Liabilities:CreditCard    10000.0     5000.0   50.0       5000.0   50.0
-    Expenses:Car:Fuel          5000.0     1000.0   20.0       4000.0   80.0
-    Expenses:Clothing         10000.0     5000.0   50.0       5000.0   50.0
-    Expenses:Education:Fees   11000.0     5000.0   45.5       6000.0   54.5
-    Expenses:Food:DiningOut   10000.0     3000.0   30.0       7000.0   70.0
-    Expenses:Gardening            0.0     2000.0             -2000.0
-    Expenses:Groceries        50000.0    10800.0   21.6      39200.0   78.4
-    Expenses:Medicine          2000.0     1000.0   50.0       1000.0   50.0
-    Expenses:PocketMoney      10000.0     6000.0   60.0       4000.0   40.0
-    Totals                   108000.0    38800.0   35.9      69200.0   64.1
+    Credit Card               10000.0     5000.0   50.0       5000.0   50.0
+    Fuel                       5000.0     1000.0   20.0       4000.0   80.0
+    Fun                        1000.0      100.0   10.0        900.0   90.0
+    Clothing                  10000.0     5000.0   50.0       5000.0   50.0
+    School                    11000.0     5000.0   45.5       6000.0   54.5
+    Dining out                10000.0     3000.0   30.0       7000.0   70.0
+    Groceries                 50000.0    10800.0   21.6      39200.0   78.4
+    Medicine                   2000.0     1000.0   50.0       1000.0   50.0
+    Pocket Money              10000.0     6000.0   60.0       4000.0   40.0
+    Totals                   109000.0    36900.0   35.9      72100.0   66.1
 
 Notes:  
 
