@@ -435,7 +435,7 @@ def testBudgetWithMultipleAccounts(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Takeout
 
-2021-01-01 custom "budget" "Food" Expenses:Takeout Expenses:Groceries "month"   1000.0 USD
+2021-01-01 custom "budget" "Food" "Expenses:Takeout Expenses:Groceries" "month"   1000.0 USD
 
 2021-01-02 * "TestPayee" "Some description"
     Expenses:Groceries                    400.0 USD
@@ -466,7 +466,7 @@ def testThrowWhenAccountAlreadyTaken(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Takeout
 
-2021-01-01 custom "budget" "Food" Expenses:Takeout Expenses:Groceries "month"   1000.0 USD
+2021-01-01 custom "budget" "Food" "Expenses:Takeout Expenses:Groceries" "month"   1000.0 USD
 
 2021-01-01 custom "budget" "Other" Expenses:Takeout "month"   1000.0 USD
 
@@ -497,7 +497,7 @@ def testCanAcceptAccountInDifferentBudgetsIfPeriodIsDifferent(monkeypatch):
 2001-01-01 open Expenses:Groceries
 2001-01-01 open Expenses:Takeout
 
-2021-01-01 custom "budget" "Food" Expenses:Takeout Expenses:Groceries "month" 1000.0 USD
+2021-01-01 custom "budget" "Food" "Expenses:Takeout Expenses:Groceries" "month" 1000.0 USD
 
 2021-01-01 custom "budget" "YearlyFood" Expenses:Groceries "year" 12000.0 USD
 
@@ -531,9 +531,12 @@ def testMultipleBudgetsWithMultipleAccounts(monkeypatch):
     2001-01-01 open Expenses:Tech:HW
     2001-01-01 open Expenses:Tech:SW
     
-    2021-01-01 custom "budget" "Food" Expenses:Takeout Expenses:Groceries "month" 1000.0 USD
+    2021-01-01 custom "budget" "Food" "
+        Expenses:Takeout 
+        Expenses:Groceries
+    " "month" 1000.0 USD
     
-    2021-01-01 custom "budget" "Tech" Expenses:Tech:HW Expenses:Tech:SW "month" 2000.0 USD
+    2021-01-01 custom "budget" "Tech" "Expenses:Tech:HW Expenses:Tech:SW" "month" 2000.0 USD
     
     2021-01-02 * "TestPayee" "Some description"
         Expenses:Groceries                    400.0 USD
@@ -571,30 +574,23 @@ def testMultipleBudgetsWithMultipleAccounts(monkeypatch):
       assert br.getTotalRemaining() == 1900.0
 
 def testSupportSubAccounts(monkeypatch):
-#    s = """2001-01-01 open Assets:CashInHand
-#2001-01-01 open Expenses:Groceries:Meat
-#2001-01-01 open Expenses:Food:Takeout
-#
-#2021-01-01 custom "budget" "Food" Expenses:Food Expenses:Groceries "month" 1000.0 USD
-#
-#2021-01-02 * "TestPayee" "Some description"
-#    Expenses:Groceries:Meat                    400.0 USD
-#    Assets:CashInHand
-#
-#2021-01-03 * "TestPayee" "Other description"
-#    Expenses:Food:Takeout                      100.0 USD
-#    Assets:CashInHand"""
+    s = """2001-01-01 open Assets:CashInHand
+2001-01-01 open Expenses:Groceries:Meat
+2001-01-01 open Expenses:Food:Takeout
+
+2021-01-01 custom "budget" "Food" "
+    Expenses:Food 
+    Expenses:Groceries
+" "month" 1000.0 USD
+
+2021-01-02 * "TestPayee" "Some description"
+    Expenses:Groceries:Meat                    400.0 USD
+    Assets:CashInHand
+
+2021-01-03 * "TestPayee" "Other description"
+    Expenses:Food:Takeout                      100.0 USD
+    Assets:CashInHand"""
     
-    s = ('2001-01-01 open Assets:CashInHand\n'
-        '2001-01-01 open Expenses:Groceries:Meat\n'
-        '2001-01-01 open Expenses:Food:Takeout\n\n'
-        '2021-01-01 custom "budget" "Food" Expenses:Food Expenses:Groceries "month" 1000.0 USD\n\n'
-        '2021-01-02 * "TestPayee" "Some description"\n'
-        '    Expenses:Groceries:Meat                    400.0 USD\n'
-        '    Assets:CashInHand\n\n'
-        '2021-01-03 * "TestPayee" "Other description"\n'
-        '    Expenses:Food:Takeout                      100.0 USD\n'
-        '    Assets:CashInHand\n')
     entries, errors, options_map = loader.load_string(s)
 
     with monkeypatch.context() as m:
@@ -644,8 +640,15 @@ def canOverrideBudgetWithSameName(monkeypatch):
 2001-01-01 open Expenses:B
 2001-01-01 open Expenses:C
 
-2021-01-01 custom "budget" "Food" Expenses:A Expenses:B "month" 1000.0 USD
-2021-01-01 custom "budget" "Food" Expenses:A Expenses:C "month" 2000.0 USD
+2021-01-01 custom "budget" "Food" "
+    Expenses:A
+    Expenses:B
+" "month" 1000.0 USD
+
+2021-01-01 custom "budget" "Food" "
+    Expenses:A 
+    Expenses:C
+" "month" 2000.0 USD
 
 2021-01-05 * "TestPayee" "Some description"
     Expenses:A                              400.0 USD

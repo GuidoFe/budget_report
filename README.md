@@ -8,17 +8,14 @@ If you use the text-based ledger system ie [beancount](https://github.com/beanco
 
 ## 2. Installation
 
-The simplest way to install and use `budget-report` is via pip:  
+This fork is still not in the pip store. To install it manually:
 
-`pip install budget-report`, for installing globally
-
-or  
-
-`pip install budget-report --user`, if you want to install for local user
-
-or, if you'd prefer to clone this repo instead of installing from PyPI, issue the followng command inside the project folder.
-
-`pip install .`
+1. Type `make build` in the terminal from the project folder
+2. Type 
+```
+cd dist && pip install budget_report-X.X.tar.gz
+```
+where X.X is the current version
 
 
 ## 3. How-To Use

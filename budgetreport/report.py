@@ -118,13 +118,13 @@ class BudgetReport:
             if isinstance(entry, beancount.core.data.Custom) and \
                entry.type == 'budget' and \
                entry.date <= self.end_date and \
-               entry.values[-2].value == self.period.period:
+               entry.values[2].value == self.period.period:
                 name = str(entry.values[0].value)
                 period = self.period.period
-                budget = abs(entry.values[-1].value.number)
+                budget = abs(entry.values[3].value.number)
                 accounts = [];
-                for i in range(1, len(entry.values) - 2):
-                    accounts.append(str(entry.values[i].value))
+                for account in str(entry.values[1].value).split():
+                    accounts.append(account)
                 self._addBudget(name, entry.date, accounts, period, budget)
 
         # Collect expense accounts not budgetted but have expenses within the report period
