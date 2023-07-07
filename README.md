@@ -31,7 +31,9 @@ Using `budget-report` with your beancount files is a three step process:
 
 You specify your budget by entering a sequenct of beancount `custom` directives in the following format:  
 
-`<Date> custom "budget" <Name> <Accounts> <Period> <Amount> <Currency> `
+```
+<Date> custom "budget" "open" <Name> <Accounts> <Period> <Amount> <Currency>
+```
 
 Where:  
 
@@ -46,37 +48,37 @@ Here is an example budget:
 
 
 ```
-2021-11-06 custom "budget" "Credit Card" "
+2021-11-06 custom "budget" "open" "Credit Card" "
     Liabilities:CreditCard
 " "month"                          10000.0 RS
 
-2021-11-06 custom "budget" "Fuel" "
+2021-11-06 custom "budget" "open" "Fuel" "
     Expenses:Car:Fuel
     Expenses:Truck:Fuel
 " "month"                         5000.0 RS
 
-2021-11-06 custom "budget" "Fun" "
+2021-11-06 custom "budget" "open" "Fun" "
     Expenses:Fun:Gaming
     Expenses:Subscriptions:Twitch
 " "month"                         1000.0 RS
 
-2021-11-06 custom "budget" "Clothing" "
+2021-11-06 custom "budget" "open" "Clothing" "
     Expenses:Clothing 
     Expenses:Accessories
 " "month"                         10000.0 RS
 
-2021-11-06 custom "budget" "School" Expenses:Education "month" 11000 RS
+2021-11-06 custom "budget" "open" "School" Expenses:Education "month" 11000 RS
 
-2021-11-06 custom "budget" "Dining out" "
+2021-11-06 custom "budget" "open" "Dining out" "
     Expenses:Food:DiningOut 
     Expenses:Vacation:Restaurant
 " "month"                          3000.0 RS
 
-2021-11-06 custom "budget" "Groceries" Expenses:Groceries "month" 50000 RS
+2021-11-06 custom "budget" "open" "Groceries" Expenses:Groceries "month" 50000 RS
 
-2021-11-06 custom "budget" "Medicine" Expenses:Medicine "month" 2000 RS
+2021-11-06 custom "budget" "open" "Medicine" Expenses:Medicine "month" 2000 RS
 
-2021-11-06 custom "budget" "Pocket Money" Expenses:PocketMoney "month" 10000 RS
+2021-11-06 custom "budget" "open" "Pocket Money" Expenses:PocketMoney "month" 10000 RS
 ```
 
 Please note that:   
@@ -85,20 +87,28 @@ a. Any budgets entries in the beancount file would override any previously speci
 b. The budget entries could also be put into a separate file such as `mybudget.bean` and included into your main ledger file with `include "mybudget.bean"`
 c. If you specify multiple accounts for a budget, they must be inside double quotes. You can put them in multiple lines, but the first quote must be in the first line and the second quote must be in the last one. For example, this is **WRONG**:
 ```
-2021-11-06 custom "budget" "Fuel" 
+2021-11-06 custom "budget" "open" "Fuel" 
    "Expenses:Car:Fuel
     Expenses:Truck:Fuel"
 month"                         5000.0 RS
 ```
 These are **RIGHT**:
 ```
-2021-11-06 custom "budget" "Fuel" "
+2021-11-06 custom "budget" "open" "Fuel" "
     Expenses:Car:Fuel
     Expenses:Truck:Fuel
 " "month"                         5000.0 RS
 
-2021-11-06 custom "budget" "Groceries" Expenses:Groceries "month" 50000 RS
+2021-11-06 custom "budget" "open" "Groceries" Expenses:Groceries "month" 50000 RS
 ```
+
+#### 3.1.1 Allocate a new amount
+
+To define a new amount of an existing budget, instead of recreating the budget you can use this command:
+```
+<Date> custom "budget" "allocate" <Name> <Amount> <Currency>
+```
+The amount will replace the old one from the specified date, but the accounts and period will remain the same.
 
 ### 3.2 Specifying Transaction to include in budget  
 

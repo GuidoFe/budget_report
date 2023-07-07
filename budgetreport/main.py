@@ -27,7 +27,6 @@ def init_arg_parser():
 def script_main():
     parser = init_arg_parser()
     args = parser.parse_args()
-
     entries, errors, options_map = loader.load_file(args.filename)
     if errors:
         if args.verbose:

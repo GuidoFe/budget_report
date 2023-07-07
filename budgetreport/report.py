@@ -119,7 +119,7 @@ class BudgetReport:
 
 
     # Collect Budget accounts
-    def collectBudgets(self, entries, options_map, args):
+    def collectBudgets(self, entries, options_map):
         # Collect all budgets
         for entry in entries:
             if not (isinstance(entry, beancount.core.data.Custom) and \
@@ -144,8 +144,8 @@ class BudgetReport:
 
         # Collect expense accounts not budgetted but have expenses within the report period
         acct_query = "select account WHERE account ~ 'Expense' "
-        if args.tag:
-            acct_query += " and '{}' in tags ".format(args.tag)
+        if self.tag:
+            acct_query += " and '{}' in tags ".format(self.tag)
 
         if self.start_date:
             acct_query += " and date >= {} ".format(self.start_date)
@@ -162,68 +162,69 @@ class BudgetReport:
                 self._addBudget(account, dt.today().strftime(
                     "%Y-%m-%d"), [account], self.period.period, 0.0)
 
-# getBudgetReport : entries, options_map -> { account: BudgetItem }
+    def generateBudgetReport(self, entries, options_map, tag, start_date, end_date, period):
+        if tag:
+            self.tag = tag
+            self.start_date = dt.min.date() # Start from begining to include all entries within the tag
+        if period:
+            self.setPeriod(period)
+        if start_date:
+            self.setPeriod(self.period.period, dt.fromisoformat(start_date).date())
+        if end_date:
+            self.end_date = dt.fromisoformat(end_date).date()
+            assert self.end_date >= self.start_date
+        self.collectBudgets(entries, options_map)
+        # ========================================================================================
+        # Get actual postings for all budgetted accounts
+        for name in self.budgetItems: # budgets:
+            budget = self.budgetItems[name]
+            postings_query = "select date, account, position, balance, number, other_accounts WHERE ( {} ) and not (findfirst('Liabilities', other_accounts) ~ 'Liabilities') and number >= 0.0 ".format(" OR ".join(map(lambda a: f"account ~ \"{a}\"", budget.accounts)))
+            if tag:
+                postings_query += " and '{}' in tags ".format(self.tag)
+
+            if self.start_date:
+                postings_query += " and date >= {} ".format(self.start_date)#.strftime('%Y-%m-%d'))
+
+            if self.end_date:
+                postings_query += " and date <= {} ".format(self.end_date)#.strftime('%Y-%m-%d'))
+
+            #print('query: ', postings_query)
+            rtypes, rrows = query.run_query(entries, options_map, postings_query, '', numberify=True)
+
+            if len(rrows) != 0:
+                try:
+                    date = rrows[len(rrows)-1][0] # Get date of last posting
+                    amount = abs(rrows[len(rrows)-1][3]) # get balance from last row
+                    if amount == 0.0:
+                        print('Warning: adding zero expense for budget= {}'.format(name))
+                except Exception as e:
+                    print('Exception caused by rrows value: \n  ', rrows[len(rrows)-1])
+                else:
+                    #print('adding expense: {}-{}'.format(account, amount))
+                    self.addBudgetExpense(date, name, amount)
+
+        # Get total income during the report period
+        income_query = "select date, account, position, balance where account ~ 'Income'"
+
+        if tag:
+            income_query += " and '{}' in tags ".format(self.tag)
+
+        if self.start_date:
+            income_query += " and date >= {} ".format(self.start_date)#.strftime('%Y-%m-%d'))
+
+        if self.end_date:
+            income_query += " and date <= {} ".format(self.end_date)#.strftime('%Y-%m-%d'))
+
+        rtypes, rrows = query.run_query(entries, options_map, income_query, '', numberify=True)
+        # print(rrows)
+        if len(rrows) != 0:
+            self.total_income = abs(rrows[len(rrows)-1][3])
+
 def generateBudgetReport(entries, options_map, args):
     br = BudgetReport()
-    if args.tag:
-        br.tag = args.tag
-        br.start_date = dt.min.date() # Start from begining to include all entries within the tag
-    if args.period:
-        br.setPeriod(args.period)
-    if args.start_date:
-        br.setPeriod(br.period.period, dt.fromisoformat(args.start_date).date())
-    if args.end_date:
-        br.end_date = dt.fromisoformat(args.end_date).date()
-        assert br.end_date >= br.start_date
-
-    br.collectBudgets(entries, options_map, args)
-    # ========================================================================================
-    # Get actual postings for all budgetted accounts
-    for name in br.budgetItems: # budgets:
-        budget = br.budgetItems[name]
-        postings_query = "select date, account, position, balance, number, other_accounts WHERE ( {} ) and not (findfirst('Liabilities', other_accounts) ~ 'Liabilities') and number >= 0.0 ".format(" OR ".join(map(lambda a: f"account ~ \"{a}\"", budget.accounts)))
-        if args.tag:
-            postings_query += " and '{}' in tags ".format(br.tag)
-
-        if br.start_date:
-            postings_query += " and date >= {} ".format(br.start_date)#.strftime('%Y-%m-%d'))
-
-        if br.end_date:
-            postings_query += " and date <= {} ".format(br.end_date)#.strftime('%Y-%m-%d'))
-
-        #print('query: ', postings_query)
-        rtypes, rrows = query.run_query(entries, options_map, postings_query, '', numberify=True)
-
-        if len(rrows) != 0:
-            try:
-                date = rrows[len(rrows)-1][0] # Get date of last posting
-                amount = abs(rrows[len(rrows)-1][3]) # get balance from last row
-                if amount == 0.0:
-                    print('Warning: adding zero expense for budget= {}'.format(name))
-            except Exception as e:
-                print('Exception caused by rrows value: \n  ', rrows[len(rrows)-1])
-            else:
-                #print('adding expense: {}-{}'.format(account, amount))
-                br.addBudgetExpense(date, name, amount)
-
-    # Get total income during the report period
-    income_query = "select date, account, position, balance where account ~ 'Income'"
-
-    if args.tag:
-        income_query += " and '{}' in tags ".format(br.tag)
-
-    if br.start_date:
-        income_query += " and date >= {} ".format(br.start_date)#.strftime('%Y-%m-%d'))
-
-    if br.end_date:
-        income_query += " and date <= {} ".format(br.end_date)#.strftime('%Y-%m-%d'))
-
-    rtypes, rrows = query.run_query(entries, options_map, income_query, '', numberify=True)
-    # print(rrows)
-    if len(rrows) != 0:
-        br.total_income = abs(rrows[len(rrows)-1][3])
-
+    br.generateBudgetReport(entries, options_map, args.tag, args.start_date, args.end_date, args.period)
     return br
+
 
 class ABItem:
     def __init__(self, name):
