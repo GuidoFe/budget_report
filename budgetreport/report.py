@@ -3,6 +3,7 @@ from datetime import datetime as dt
 import decimal
 import beancount
 from beancount.query import query
+from beancount.query.query_execute import options
 from tabulate import tabulate
 from .budget import BudgetItem
 from .period import Period
@@ -18,6 +19,7 @@ class BudgetReport:
         self.period = Period('month') # default period is month
         self.start_date = self.period.getPeriodStart(dt.today())
         self.end_date = self.period.getPeriodEnd(dt.today())
+        self.currency = None
 
     def _addBudget(self, name, date, accounts, period, budget):
         assert period == self.period.period # only allow adding budget of matching period
@@ -118,28 +120,35 @@ class BudgetReport:
         print(tabulate(budget_data, headings, numalign="right", floatfmt=".2f"))
 
 
-    # Collect Budget accounts
+    # Collect Budget accounts and default currency
     def collectBudgets(self, entries, options_map):
         # Collect all budgets
+        self.currency = options_map["operating_currency"][0]
         for entry in entries:
             if not (isinstance(entry, beancount.core.data.Custom) and \
                     entry.type == 'budget' and \
                     entry.date <= self.end_date):
                 continue
-            if entry.values[0].value == 'open' and \
-                    entry.values[3].value == self.period.period:
-                name = str(entry.values[1].value)
-                period = self.period.period
-                budget = abs(entry.values[4].value.number)
-                accounts = [];
-                for account in str(entry.values[2].value).split():
-                    accounts.append(account)
-                self._addBudget(name, entry.date, accounts, period, budget)
+            if entry.values[0].value == 'open':
+                if entry.values[3].value == self.period.period:
+                    name = str(entry.values[1].value)
+                    if entry.values[4].value.currency != self.currency and entry.values[4].value.currency != None:
+                        print("WARNING: currency for {} budget not supported".format(name))
+                    period = self.period.period
+                    budget = abs(entry.values[4].value.number)
+                    accounts = [];
+                    for account in str(entry.values[2].value).split():
+                        accounts.append(account)
+                    self._addBudget(name, entry.date, accounts, period, budget)
             elif str(entry.values[0].value) == "allocate":
                 name = str(entry.values[1].value)
+                if entry.values[2].value.currency != self.currency and entry.values[2].value.currency != None:
+                    print("WARNING: currency for {} budget not supported".format(name))
                 if name in self.budgetItems:
                     budget = abs(entry.values[2].value.number)
                     self.changeBudgetBudget(name, budget)
+            else: 
+                print("WARNING: budget command '{}' not recognized. Calculated values could be incorrect.".format(entry.values[0].value))
 
 
         # Collect expense accounts not budgetted but have expenses within the report period
@@ -174,11 +183,13 @@ class BudgetReport:
             self.end_date = dt.fromisoformat(end_date).date()
             assert self.end_date >= self.start_date
         self.collectBudgets(entries, options_map)
+        if self.currency == None:
+            print("WARNING: currency not set")
         # ========================================================================================
         # Get actual postings for all budgetted accounts
         for name in self.budgetItems: # budgets:
             budget = self.budgetItems[name]
-            postings_query = "select date, account, position, balance, number, other_accounts WHERE ( {} ) and not (findfirst('Liabilities', other_accounts) ~ 'Liabilities') and number >= 0.0 ".format(" OR ".join(map(lambda a: f"account ~ \"{a}\"", budget.accounts)))
+            postings_query = "select date, account, position, balance, number, other_accounts WHERE ( {} ) and not (findfirst('Liabilities', other_accounts) ~ 'Liabilities') and number >= 0.0 and currency = '{}'".format(" OR ".join(map(lambda a: f"account ~ \"{a}\"", budget.accounts)), self.currency)
             if tag:
                 postings_query += " and '{}' in tags ".format(self.tag)
 
